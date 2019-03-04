@@ -11,3 +11,6 @@ GET     /tutorial                           controllers.HomeController.tutorial
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+POST    /measurements                controllers.MeasurementController.postData

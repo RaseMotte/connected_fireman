@@ -1,6 +1,6 @@
 // @GENERATOR:play-routes-compiler
-// @SOURCE:/home/henri/IdeaProjects/Scala_project/play-scala-hello-world-tutorial/conf/routes
-// @DATE:Mon Mar 04 17:14:29 CET 2019
+// @SOURCE:/home/henri/IdeaProjects/Scala_repo/connected_fireman/conf/routes
+// @DATE:Mon Mar 04 17:53:35 CET 2019
 
 import play.api.mvc.Call
 
@@ -9,6 +9,21 @@ import _root_.controllers.Assets.Asset
 
 // @LINE:7
 package controllers {
+
+  // @LINE:16
+  class ReverseMeasurementController(_prefix: => String) {
+    def _defaultPrefix: String = {
+      if (_prefix.endsWith("/")) "" else "/"
+    }
+
+  
+    // @LINE:16
+    def postData(): Call = {
+      
+      Call("POST", _prefix + { _defaultPrefix } + "measurements")
+    }
+  
+  }
 
   // @LINE:7
   class ReverseHomeController(_prefix: => String) {

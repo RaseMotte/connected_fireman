@@ -55,8 +55,8 @@ Seq[Any](format.raw/*1.4*/("""
 
               /*
                   -- GENERATED --
-                  DATE: Mon Mar 04 17:14:30 CET 2019
-                  SOURCE: /home/henri/IdeaProjects/Scala_project/play-scala-hello-world-tutorial/app/views/commonSidebar.scala.html
+                  DATE: Mon Mar 04 17:40:27 CET 2019
+                  SOURCE: /home/henri/IdeaProjects/Scala_repo/connected_fireman/app/views/commonSidebar.scala.html
                   HASH: 1885f2d2fc536bc352678797f7f16958879d90c1
                   MATRIX: 730->1|826->3|854->6|901->45|951->58|979->60|1055->110|1069->116|1110->137|1180->181|1194->187|1237->210|1312->259|1326->265|1370->289|1526->418|1554->425
                   LINES: 21->1|26->1|27->2|27->2|27->2|28->3|30->5|30->5|30->5|31->6|31->6|31->6|32->7|32->7|32->7|36->11|36->11

@@ -1,6 +1,6 @@
 // @GENERATOR:play-routes-compiler
-// @SOURCE:/home/henri/IdeaProjects/Scala_project/play-scala-hello-world-tutorial/conf/routes
-// @DATE:Mon Mar 04 17:14:29 CET 2019
+// @SOURCE:/home/henri/IdeaProjects/Scala_repo/connected_fireman/conf/routes
+// @DATE:Mon Mar 04 17:53:35 CET 2019
 
 package router
 
@@ -17,6 +17,8 @@ class Routes(
   HomeController_1: controllers.HomeController,
   // @LINE:13
   Assets_0: controllers.Assets,
+  // @LINE:16
+  MeasurementController_2: controllers.MeasurementController,
   val prefix: String
 ) extends GeneratedRouter {
 
@@ -25,13 +27,15 @@ class Routes(
     // @LINE:7
     HomeController_1: controllers.HomeController,
     // @LINE:13
-    Assets_0: controllers.Assets
-  ) = this(errorHandler, HomeController_1, Assets_0, "/")
+    Assets_0: controllers.Assets,
+    // @LINE:16
+    MeasurementController_2: controllers.MeasurementController
+  ) = this(errorHandler, HomeController_1, Assets_0, MeasurementController_2, "/")
 
   def withPrefix(addPrefix: String): Routes = {
     val prefix = play.api.routing.Router.concatPrefix(addPrefix, this.prefix)
     router.RoutesPrefix.setPrefix(prefix)
-    new Routes(errorHandler, HomeController_1, Assets_0, prefix)
+    new Routes(errorHandler, HomeController_1, Assets_0, MeasurementController_2, prefix)
   }
 
   private[this] val defaultPrefix: String = {
@@ -43,6 +47,7 @@ class Routes(
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """explore""", """controllers.HomeController.explore"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """tutorial""", """controllers.HomeController.tutorial"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/""" + "$" + """file<.+>""", """controllers.Assets.versioned(path:String = "/public", file:Asset)"""),
+    ("""POST""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """measurements""", """controllers.MeasurementController.postData"""),
     Nil
   ).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
     case r @ (_,_,_) => s :+ r.asInstanceOf[(String,String,String)]
@@ -122,6 +127,24 @@ class Routes(
     )
   )
 
+  // @LINE:16
+  private[this] lazy val controllers_MeasurementController_postData4_route = Route("POST",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("measurements")))
+  )
+  private[this] lazy val controllers_MeasurementController_postData4_invoker = createInvoker(
+    MeasurementController_2.postData,
+    play.api.routing.HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.MeasurementController",
+      "postData",
+      Nil,
+      "POST",
+      this.prefix + """measurements""",
+      """""",
+      Seq()
+    )
+  )
+
 
   def routes: PartialFunction[RequestHeader, Handler] = {
   
@@ -147,6 +170,12 @@ class Routes(
     case controllers_Assets_versioned3_route(params@_) =>
       call(Param[String]("path", Right("/public")), params.fromPath[Asset]("file", None)) { (path, file) =>
         controllers_Assets_versioned3_invoker.call(Assets_0.versioned(path, file))
+      }
+  
+    // @LINE:16
+    case controllers_MeasurementController_postData4_route(params@_) =>
+      call { 
+        controllers_MeasurementController_postData4_invoker.call(MeasurementController_2.postData)
       }
   }
 }
