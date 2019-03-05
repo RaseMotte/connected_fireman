@@ -1,4 +1,0 @@
-[error] /home/henri/IdeaProjects/Scala_repo/connected_fireman/app/controllers/MeasurementController.scala:15:7: Cannot write an instance of ((String, String), (String, Option[String])) to HTTP response. Try to define a Writeable[((String, String), (String, Option[String]))]
-[error]     Ok("status" -> "OK", "message" -> request.body.asText)
-[error]       ^
-[error] one error found
