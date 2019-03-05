@@ -1,0 +1,24 @@
+TODO
+
+* CLIENT
+
+[] Read a file
+[] getline
+[] send line
+
+* SERVER
+
+[X] Logger
+    -> Using the base one, still getting warnings.
+    Might be nice to create a custom one with predefined patterns ect..
+
+[] Class Measurement
+    [X] timestamp date format & parse
+    [] coordinates embedded Format
+
+* TEST
+    - Choose a framework
+        MOCHAAAAAAA <3
+    - Valid
+    - Invalid
+        [] Missing field in the Json - check serv ret err
