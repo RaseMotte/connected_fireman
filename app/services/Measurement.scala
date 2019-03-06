@@ -2,6 +2,7 @@ package services
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import javax.inject._
 
 import play.api.Logger
 
@@ -25,11 +26,36 @@ case class GpsDD(longitude: Double, latitude: Double) {
   */
 case class Measurement (udid: String, gpsDD: GpsDD, temperatureIn: Float, temperatureOut: Float, time: String) {
 
-  def save() = {
+  def getTime(): Timestamp = {
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'")
     val parsedDate = dateFormat.parse(time)
     val timestamp = new Timestamp(parsedDate.getTime)
-    Logger.debug(s"Successfully created $timestamp")
+    Logger.debug(s"Successfully converted $timestamp")
+    timestamp
   }
 
+}
+
+@Singleton
+case class AtomicMeasurementList() {
+
+
+  private val data = Set[Measurement]()
+
+  private val lock = new Object
+
+  def add(elem: Measurement) =  data + elem
+
+  def delete(udid: String) = data.filter(measurement => measurement.udid != udid)
+
+  def getAll() =  data
+
+  def getUdidMeasurements(udid: String) = data.filter(measurement => measurement.udid == udid)
+
+  def getMetric(metric: String) = metric match {
+    case "gpsDD" => data.map(measurement => (measurement.gpsDD, measurement.time))
+    case "temperatureIn" => data.map(measurement => (measurement.temperatureIn, measurement.time))
+    case "temperatureOut" => data.map(measurement => (measurement.temperatureOut, measurement.time))
+    case _ => None
+  }
 }
