@@ -1,12 +1,11 @@
 package controllers
 
-import java.sql.Timestamp
-
 import javax.inject._
 import play.api.Logger
+import play.api.db.Database
 import play.api.libs.json._
 import play.api.mvc._
-import services.{AtomicMeasurementList, GpsDD, Measurement}
+import services.Measurement
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the
@@ -14,20 +13,28 @@ import services.{AtomicMeasurementList, GpsDD, Measurement}
   */
 @Singleton
 class MeasurementController @Inject()(cc: ControllerComponents,
-                                      measurementList: AtomicMeasurementList) extends AbstractController(cc) {
+                                      db: Database) extends AbstractController(cc) {
 
   def postData = Action(parse.json) { request =>
-    implicit val gpsDDFormat: Format[GpsDD] = Json.format[GpsDD]
+    val dbConnection = db.getConnection()
     implicit val measurementFormat: Format[Measurement]= Json.format[Measurement]
     val measurementResult = request.body.validate[Measurement]
     measurementResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        BadRequest(Json.obj("status" -> "422", "message" -> JsError.toJson(errors)))
       },
       measurement => {
         Logger.debug(s"Successfully build $measurement")
-        measurementList.add(measurement)
-        Ok("Measurement added\n")
+        try {
+          val statement = dbConnection.createStatement()
+          val res = statement.executeQuery(s"INSERT INTO TABLE tableName VALUES $measurement")
+          Ok("Measurement added\n")
+        //} catch  {
+          //BadRequest("status" -> "500", "message" -> "Failed add db")
+          //Logger.error("Failed to add measurement to the db.")
+        } finally {
+          dbConnection.close()
+        }
       }
     )
   }
