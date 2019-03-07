@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 import play.api.Logger
-import play.api.db.Database
+import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
 import services.Measurement
@@ -27,7 +27,8 @@ class MeasurementController @Inject()(cc: ControllerComponents,
         Logger.debug(s"Successfully build $measurement")
         try {
           val statement = dbConnection.createStatement()
-          val res = statement.executeQuery(s"INSERT INTO TABLE tableName VALUES $measurement")
+          println(s"INSERT INTO measurement VALUES ${measurement.sqlFormat};")
+          val res = statement.executeUpdate(s"INSERT INTO measurement VALUES ${measurement.sqlFormat};")
           Ok("Measurement added\n")
         //} catch  {
           //BadRequest("status" -> "500", "message" -> "Failed add db")
@@ -38,4 +39,6 @@ class MeasurementController @Inject()(cc: ControllerComponents,
       }
     )
   }
+
+
 }

@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    postgres:
+        image: postgres
+        container_name: scala_postgres
+        ports: 
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=scala_user
+            - POSTGRES_DB=scala_project
+        volumes:
+            - "./db_postgres:/var/lib/postgresql"
+

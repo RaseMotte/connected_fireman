@@ -16,11 +16,14 @@ import play.api.Logger
   * @param time: Timestamp - time at which the measurement was done, follows ISO 8601
   */
 case class Measurement (udid: String, longitude: Double, latitude: Double,
-                        temperatureIn: Float, temperatureOut: Float, time: String) {
+                        temperatureIn: Float, temperatureOut: Float, mtime: String) {
+
+
+  def sqlFormat = s"($udid, $longitude, $latitude, $temperatureIn, $temperatureOut, TIMESTAMP'${this.getTime()}')"
 
   def getTime(): Timestamp = {
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'")
-    val parsedDate = dateFormat.parse(time)
+    val parsedDate = dateFormat.parse(mtime)
     val timestamp = new Timestamp(parsedDate.getTime)
     Logger.debug(s"Successfully converted $timestamp")
     timestamp

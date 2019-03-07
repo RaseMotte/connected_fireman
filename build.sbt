@@ -12,4 +12,4 @@ crossScalaVersions := Seq("2.12.6", "2.11.12")
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 libraryDependencies += jdbc
-libraryDependencies += "com.h2database" % "h2" % "1.4.192"
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41"
