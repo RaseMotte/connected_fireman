@@ -16,6 +16,13 @@ TODO
     [X] timestamp date format & parse
     [] coordinates embedded Format
 
+* DATABASE
+
+[] Setup database dans docker
+[] Setup dans le build
+[] Module database
+
+
 * TEST
     - Choose a framework
         MOCHAAAAAAA <3
