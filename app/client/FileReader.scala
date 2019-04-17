@@ -1,6 +1,6 @@
 import java.io.File
 import java.nio.file.{Files, Paths}
-
+/*
 def exists(dir: String) : Boolean = {
   Files.exists(Paths.get(dir))
 }
@@ -33,4 +33,4 @@ def main(directory: String) = {
 
 }
 
-main("parsetest")
+main("parsetest")*/

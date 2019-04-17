@@ -9,3 +9,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 POST    /measurements                controllers.MeasurementController.postData
+GET     /measurements                controllers.MeasurementController.getData
