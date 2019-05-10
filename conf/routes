@@ -10,3 +10,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 POST    /measurements                controllers.MeasurementController.postData
 GET     /measurements                controllers.MeasurementController.getData
+
+POST    /emergency                controllers.EmergencyController.postData
+GET     /emergency                controllers.EmergencyController.getData
