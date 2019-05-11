@@ -9,8 +9,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import services.Measurement
 
-import scala.annotation.tailrec
-
 
 
 /**
@@ -49,33 +47,19 @@ class MeasurementController @Inject()(cc: ControllerComponents,
     )
   }
 
-  @tailrec
-  final def loop(res: ResultSet,
-                 accumulator: String): String = {
-    if (!res.next) "{ measurement: [" + accumulator.substring(0, accumulator.length()) + "] }"
-    else {
-      val value = "{udid: " + res.getString("udid") +
-        ", longitude: " + res.getString("longitude") +
-        ", latitude: " + res.getString("latitude") +
-        ", temperature in: " + res.getString("temperaturein") +
-        ", temperature out: " + res.getString("temperatureout") +
-        ", time: " + res.getString("mtime") + "},"
-      loop(res, value + "\n" + accumulator)
-    }
-  }
+    def getData() = Action { implicit request: Request[AnyContent] =>
+      val dbConnection = db.getConnection()
+      try {
+        val statement = dbConnection.createStatement()
 
+        val measurements = Measurement.parseStream(
+          statement.executeQuery(s"SELECT * FROM measurement;"),
+          List[Measurement]())
 
-  def getData() = Action { implicit request: Request[AnyContent] =>
-    val dbConnection = db.getConnection()
-    try {
-      val statement = dbConnection.createStatement()
-
-      val res = statement.executeQuery(s"SELECT * FROM measurement;")
-      val to_return : String = loop(res, "")
-      Ok(to_return)
+        Ok(views.html.index(measurements, Nil))
+      }
+      finally {
+        dbConnection.close()
+      }
     }
-    finally {
-      dbConnection.close()
-    }
-  }
 }

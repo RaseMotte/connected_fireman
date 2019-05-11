@@ -9,8 +9,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import services.Emergency
 
-import scala.annotation.tailrec
-
 
 
 /**
@@ -46,31 +44,19 @@ class EmergencyController @Inject()(cc: ControllerComponents,
     )
   }
 
-  @tailrec
-  final def loop(res: ResultSet,
-                 accumulator: String): String = {
-    if (!res.next) "{ emergency: [" + accumulator.substring(0, accumulator.length()) + "] }"
-    else {
-      val value = "{udid: " + res.getString("udid") +
-        ", metric: " + res.getString("metric") +
-        ", message: " + res.getString("message") +
-        ", time: " + res.getString("mtime") + "},"
-      loop(res, value + "\n" + accumulator)
-    }
-  }
+    def getData() = Action { implicit request: Request[AnyContent] =>
+      val dbConnection = db.getConnection()
+      try {
+        val statement = dbConnection.createStatement()
 
+        val emergencies = Emergency.parseStream(
+          statement.executeQuery(s"SELECT * FROM emergency;"),
+          List[Emergency]())
 
-  def getData() = Action { implicit request: Request[AnyContent] =>
-    val dbConnection = db.getConnection()
-    try {
-      val statement = dbConnection.createStatement()
-
-      val res = statement.executeQuery(s"SELECT * FROM emergency;")
-      val to_return : String = loop(res, "")
-      Ok(to_return)
+        Ok(views.html.index(Nil, emergencies))
+      }
+      finally {
+        dbConnection.close()
+      }
     }
-    finally {
-      dbConnection.close()
-    }
-  }
 }

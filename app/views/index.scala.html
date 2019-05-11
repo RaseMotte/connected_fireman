@@ -1,0 +1,52 @@
+@(measurements: List[services.Measurement], emergencies: List[services.Emergency])
+
+<h1>Welcome to the connected fireman API!</h1>
+</center>
+<ul @( if (measurements == Nil) "hidden" else "")>
+  <table>
+    <thead>
+      <tr>
+        <th> user device id  </th>
+        <th> longitude </th>
+        <th> latitude </th>
+        <th> temperature inside the firefighter's suits </th>
+        <th> environment's temperature </th>
+        <th> measurement's time</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(measurement <- measurements) {
+      <tr>
+        <td>@measurement.udid</td>
+        <td>@measurement.longitude</td>
+        <td>@measurement.latitude</td>
+        <td>@measurement.temperatureIn</td>
+        <td>@measurement.temperatureOut</td>
+        <td>@measurement.mtime</td>
+      </tr>
+  }
+    </tbody>
+  </table>
+
+<ul @(if (emergencies == Nil) "hidden" else "")>
+  <table>
+    <thead>
+      <tr>
+        <th> user device id  </th>
+        <th> metric </th>
+        <th> message </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(emergency <- emergencies) {
+      <tr>
+        <td>@emergency.udid</td>
+        <td>@emergency.metric</td>
+        <td>@emergency.message</td>
+      </tr>
+  }
+    </tbody>
+  </table>
+  <li>measurement</li>
+
+</ul>
