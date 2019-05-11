@@ -15,10 +15,10 @@ import play.api.Logger
   * @param temperatureOut: float - temperature outside the fireman's suit
   * @param time: Timestamp - time at which the measurement was done, follows ISO 8601
   */
-case class Emergency (udid: String, metric: String, message: String, mtime: String) {
+case class Emergency (udid: Int, metric: String, message: String, mtime: String) {
 
 
-  def sqlFormat = s"($udid, $metric, $message, TIMESTAMP'${this.getTime()}')"
+  def sqlFormat = s"($udid, '$metric', '$message', TIMESTAMP'${this.getTime()}')"
 
   def getTime(): Timestamp = {
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'")

@@ -49,7 +49,7 @@ class EmergencyController @Inject()(cc: ControllerComponents,
   @tailrec
   final def loop(res: ResultSet,
                  accumulator: String): String = {
-    if (!res.next) "{ emergency: [" + accumulator.substring(0, accumulator.length() - 2) + "] }"
+    if (!res.next) "{ emergency: [" + accumulator.substring(0, accumulator.length()) + "] }"
     else {
       val value = "{udid: " + res.getString("udid") +
         ", metric: " + res.getString("metric") +

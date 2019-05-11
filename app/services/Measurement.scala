@@ -15,7 +15,7 @@ import play.api.Logger
   * @param temperatureOut: float - temperature outside the fireman's suit
   * @param mtime: Timestamp - time at which the measurement was done, follows ISO 8601
   */
-case class Measurement (udid: String, longitude: Double, latitude: Double,
+case class Measurement (udid: Int, longitude: Double, latitude: Double,
                         temperatureIn: Float, temperatureOut: Float, mtime: String) {
 
   def sqlFormat = s"($udid, $longitude, $latitude, $temperatureIn, $temperatureOut, TIMESTAMP'${this.getTime()}')"
