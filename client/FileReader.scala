@@ -1,8 +1,7 @@
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import com.softwaremill.sttp._
-
+import scalaj.http.Http
 import scala.io.Source
 
 
@@ -24,12 +23,9 @@ object test {
 
     def readLine(file: File) = {
       for (line <- Source.fromFile(file).getLines()) {
-
-        val result = sttp
-          .post(uri"http://httpbin.org/post")
-          .body("Hello, world!")
-        implicit val backend = HttpURLConnectionBackend()
-        val firstResponse = result.send()
+        val result = Http("http://example.com/url").postData("""{"id":"12","json":"data"}""")
+          .header("Content-Type", "application/json")
+          .header("Charset", "UTF-8").asString
 
         //send in a thread or Future
         //postData(line)

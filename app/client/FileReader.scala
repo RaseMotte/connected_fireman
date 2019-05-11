@@ -1,6 +1,7 @@
 import java.io.File
 import java.nio.file.{Files, Paths}
-import com.softwaremill.sttp._
+
+import scalaj.http.Http
 
 import scala.io.Source
 def exists(dir: String) : Boolean = {
@@ -17,11 +18,9 @@ def checkExtension(fname: File) = fname.getName.drop(fname.getName.lastIndexOf("
 
 def readLine(file: File) = {
   for(line <- Source.fromFile(file).getLines()){
-    val result = sttp
-      .post(uri"http://httpbin.org/post")
-      .body("Hello, world!")
-      implicit val backend = HttpURLConnectionBackend()
-      val firstResponse = result.send()
+    val result = Http("http://example.com/url").postData("""{"id":"12","json":"data"}""")
+      .header("Content-Type", "application/json")
+      .header("Charset", "UTF-8").asString
 
     print(result)
     //send in a thread or Future
