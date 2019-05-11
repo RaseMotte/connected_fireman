@@ -1,9 +1,7 @@
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.DefaultHttpClient
+import com.softwaremill.sttp._
 
 import scala.io.Source
 
@@ -27,12 +25,11 @@ object test {
     def readLine(file: File) = {
       for (line <- Source.fromFile(file).getLines()) {
 
-        val post = new HttpPost("http://localhost:9000/measurements")
-        post.setHeader("Content-type", "application/json")
-        post.setEntity(new StringEntity(line))
-
-        val response = (new DefaultHttpClient).execute(post)
-
+        val result = sttp
+          .post(uri"http://httpbin.org/post")
+          .body("Hello, world!")
+        implicit val backend = HttpURLConnectionBackend()
+        val firstResponse = result.send()
 
         //send in a thread or Future
         //postData(line)
