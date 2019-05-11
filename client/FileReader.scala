@@ -1,7 +1,7 @@
 import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Paths}
 
-import scalaj.http.Http
+import scalaj.http.{Http, HttpOptions}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -24,20 +24,22 @@ def readLine(file: File) = {
   for(line <- Source.fromFile(file).getLines()){
       if (line.contains("metrics")) {
         val f = Future { Http("http://localhost:9000/emergency").postData(line)
-      .header("Content-Type", "application/json").asString }
+          .header("Content-Type", "application/json")
+          .options(HttpOptions.readTimeout(10000)).asString }
         f.onComplete {
-          case Success(value) => new PrintWriter("logs.txt") { write(value.toString); close }
-          case Failure(exception) => new PrintWriter("logs.txt") { write(exception.toString); close }
+          case Success(value) => new PrintWriter("client/logs.txt") { write(value.toString); close }
+          case Failure(exception) => new PrintWriter("client/logs.txt") { write(exception.toString); close }
         }
       }
       else {
         val f = Future {
           Http("http://localhost:9000/measurements").postData(line)
-            .header("Content-Type", "application/json").asString
+            .header("Content-Type", "application/json")
+            .options(HttpOptions.readTimeout(10000)).asString
         }
         f.onComplete {
-          case Success(value) => new PrintWriter("logs.txt") { write(value.toString); close }
-          case Failure(exception) => new PrintWriter("logs.txt") { write(exception.toString); close }
+          case Success(value) => new PrintWriter("client/logs.txt") { write(value.toString); close }
+          case Failure(exception) => new PrintWriter("client/logs.txt") { write(exception.toString); close }
         }
       }
   }
