@@ -1,6 +1,8 @@
 import java.io.File
 import java.nio.file.{Files, Paths}
-/*
+
+import scala.io.Source
+
 def exists(dir: String) : Boolean = {
   Files.exists(Paths.get(dir))
 }
@@ -8,20 +10,28 @@ def exists(dir: String) : Boolean = {
 def getListOfFiles(dir: File): List[File] = { dir.listFiles(_.isFile).toList }
 
 def checkExtension(fname: File) = fname.getName.drop(fname.getName.lastIndexOf(".")) match {
-  case ".json" => println(fname) // parseCsv()
-  case ".csv" => println(fname) // parseJson()
-  case _ => System.err.println("Bad file extension")
+  case ".json" => readLine(fname)
+  //case ".csv" => println(fname) // parseJson(fname)
+  case _ => System.err.println(fname.getName +": Bad file extension")
 }
 
-// def parseCsv(file: File)
+def readLine(file: File) = {
+  for(line <- Source.fromFile(file).getLines()){
+    //send in a thread or Future
+    //postData(line)
+    println(line)
+  }
+}
+
+//def parseCsv(file: File): String
 
 // def parseJson(file: File)
 
+//def sendRequest(send: String) = {}
+
 def main(directory: String) = {
   val dir = new File(directory)
-  println(dir.exists())
-  println(dir.isDirectory)
-  println(Files.exists(Paths.get(directory)))
+  //val test = new MeasurementController()
   if (Files.exists(Paths.get(directory))) {
 
     val list = getListOfFiles(dir)
@@ -33,4 +43,4 @@ def main(directory: String) = {
 
 }
 
-main("parsetest")*/
+main("parsetest")
