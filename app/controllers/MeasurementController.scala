@@ -25,6 +25,9 @@ class MeasurementController @Inject()(cc: ControllerComponents,
     val dbConnection = db.getConnection()
     implicit val measurementFormat: Format[Measurement]= Json.format[Measurement]
     val measurementResult = request.body.validate[Measurement]
+    println(request)
+    println(request.headers)
+    println(request.body)
     measurementResult.fold(
       errors => {
         BadRequest(Json.obj("status" -> "422", "message" -> JsError.toJson(errors)))
