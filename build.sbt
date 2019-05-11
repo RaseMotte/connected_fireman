@@ -13,4 +13,4 @@ libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
 libraryDependencies += jdbc
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41"
-libraryDependencies += "org.scalaj" % "scalaj-http_2.11" % "2.3.0"
+libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.8"
