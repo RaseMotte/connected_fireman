@@ -22,26 +22,25 @@ def checkExtension(fname: File) = fname.getName.drop(fname.getName.lastIndexOf("
 
 def readLine(file: File) = {
   for(line <- Source.fromFile(file).getLines()){
-      if (line.contains("metrics")) {
+      if (line.contains("metric")) {
         val f = Future { Http("http://localhost:9000/emergency").postData(line)
-          .header("Content-Type", "application/json")
-          .options(HttpOptions.readTimeout(10000)).asString }
+          .header("Content-Type", "application/json").asString }
         f.onComplete {
-          case Success(value) => new PrintWriter("client/logs.txt") { write(value.toString); close }
-          case Failure(exception) => new PrintWriter("client/logs.txt") { write(exception.toString); close }
+          case Success(value) => reflect.io.File("logs.txt").writeAll(value.toString)
+          case Failure(exception) => reflect.io.File("logs.txt").writeAll(exception.toString)
         }
       }
       else {
         val f = Future {
           Http("http://localhost:9000/measurements").postData(line)
-            .header("Content-Type", "application/json")
-            .options(HttpOptions.readTimeout(10000)).asString
+            .header("Content-Type", "application/json").asString
         }
         f.onComplete {
-          case Success(value) => new PrintWriter("client/logs.txt") { write(value.toString); close }
-          case Failure(exception) => new PrintWriter("client/logs.txt") { write(exception.toString); close }
+          case Success(value) => reflect.io.File("logs.txt").writeAll(value.toString)
+          case Failure(exception) => reflect.io.File("logs.txt").writeAll(exception.toString)
         }
       }
+    // Thread.sleep(5000) // To be realistic
   }
 }
 
@@ -54,7 +53,7 @@ def main(directory: String) = {
     list.foreach(f => checkExtension(f))
 
   }
-
+  Thread.sleep(25000) // Mandatory to let the time to all requests to reach the server
 
 }
 
