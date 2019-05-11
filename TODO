@@ -2,9 +2,9 @@ TODO
 
 * CLIENT
 
-[] Read a file
-[] getline
-[] send line
+[X] Read a file
+[X] getline
+[X] send line
 
 * SERVER
 
@@ -12,20 +12,20 @@ TODO
     -> Using the base one, still getting warnings.
     Might be nice to create a custom one with predefined patterns ect..
 
-[] Class Measurement
+[X] Class Measurement
     [X] timestamp date format & parse
-    [] coordinates embedded Format
+    [X] coordinates embedded Format
 
 * DATABASE
 
-[] Setup database dans docker
-[] Setup dans le build
-[] Module database
+[X] Setup database dans docker
+[X] Setup dans le build
+[X] Module database
 
 
 * TEST
     - Choose a framework
-        MOCHAAAAAAA <3
+        MOCHAAAAAAA
     - Valid
     - Invalid
         [] Missing field in the Json - check serv ret err
