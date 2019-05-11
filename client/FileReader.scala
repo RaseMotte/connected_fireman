@@ -1,4 +1,4 @@
-import java.io.{File, PrintWriter}
+import java.io.{File, FileWriter, PrintWriter}
 import java.nio.file.{Files, Paths}
 
 import scalaj.http.{Http, HttpOptions}
@@ -8,26 +8,37 @@ import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success}
 
-def exists(dir: String) : Boolean = {
-  Files.exists(Paths.get(dir))
-}
+object FileReader {
 
-def getListOfFiles(dir: File): List[File] = { dir.listFiles(_.isFile).toList }
+  def exists(dir: String): Boolean = {
+    Files.exists(Paths.get(dir))
+  }
 
-def checkExtension(fname: File) = fname.getName.drop(fname.getName.lastIndexOf(".")) match {
-  case ".json" => readLine(fname)
-  case _ => System.err.println(fname.getName +": Bad file extension")
-}
+  def getListOfFiles(dir: File): List[File] = {
+    dir.listFiles(_.isFile).toList
+  }
 
+  def checkExtension(fname: File) = fname.getName.drop(fname.getName.lastIndexOf(".")) match {
+    case ".json" => readLine(fname)
+    case _ => System.err.println(fname.getName + ": Bad file extension")
+  }
 
-def readLine(file: File) = {
-  for(line <- Source.fromFile(file).getLines()){
+  def writeLine(line: String) = {
+    val fw = new FileWriter("logs.txt", true)
+    fw.write(line)
+    fw.close()
+  }
+
+  def readLine(file: File) = {
+    for (line <- Source.fromFile(file).getLines()) {
       if (line.contains("metric")) {
-        val f = Future { Http("http://localhost:9000/emergency").postData(line)
-          .header("Content-Type", "application/json").asString }
+        val f = Future {
+          Http("http://localhost:9000/emergency").postData(line)
+            .header("Content-Type", "application/json").asString
+        }
         f.onComplete {
-          case Success(value) => reflect.io.File("logs.txt").writeAll(value.toString)
-          case Failure(exception) => reflect.io.File("logs.txt").writeAll(exception.toString)
+          case Success(value) => writeLine(value.toString)
+          case Failure(exception) =>writeLine(exception.toString)
         }
       }
       else {
@@ -36,25 +47,29 @@ def readLine(file: File) = {
             .header("Content-Type", "application/json").asString
         }
         f.onComplete {
-          case Success(value) => reflect.io.File("logs.txt").writeAll(value.toString)
-          case Failure(exception) => reflect.io.File("logs.txt").writeAll(exception.toString)
+          case Success(value) => writeLine(value.toString)
+          case Failure(exception) => writeLine(exception.toString)
         }
       }
-    // Thread.sleep(5000) // To be realistic
+      // Thread.sleep(5000) // To be realistic
+    }
   }
-}
 
-def main(directory: String) = {
-  val dir = new File(directory)
-  if (Files.exists(Paths.get(directory))) {
+  def main_read(directory: String) = {
+    val dir = new File(directory)
+    if (Files.exists(Paths.get(directory))) {
 
-    val list = getListOfFiles(dir)
+      val list = getListOfFiles(dir)
 
-    list.foreach(f => checkExtension(f))
+      list.foreach(f => checkExtension(f))
+
+    }
+    Thread.sleep(25000) // Mandatory to let the time to all requests to reach the server
 
   }
-  Thread.sleep(25000) // Mandatory to let the time to all requests to reach the server
+
+  def main(args: Array[String]): Unit = {
+    main_read("../test")
+  }
 
 }
-
-main("test")
