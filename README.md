@@ -1,5 +1,7 @@
 # Connected fireman
 
+This project is part of an assignment for SCALA/SPARK course at EPITAi (SCIA 2020).
+
 Our project is an API for fireman suits. Every suits will send some information about the fireman (position, temperature, time) so it can be easier for them during the interventions.
 
 The project is divided in two parts: the client and the server.
@@ -35,3 +37,11 @@ curl -v localhost:9000/measurements -X POST -H "Content-length application/json"
 curl -v localhost:9000/emergency -X POST -H "Content-length application/json" -d '{"udid": 1, "metric": "this is a metric", "message": "this is a message", "mtime": "2018-01-05T00:00:00Z"}'
 
 ```
+
+# Documentation
+## Kafka docker image info
+
+Used the spotify/kafka image as it includes an image for zookeeper.
+link to doc: https://github.com/spotify/docker-kafka
+
+

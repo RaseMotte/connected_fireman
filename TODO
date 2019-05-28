@@ -1,12 +1,14 @@
 TODO
 
-* CLIENT
+# V1
+
+## CLIENT
 
 [X] Read a file
 [X] getline
 [X] send line
 
-* SERVER
+## SERVER
 
 [X] Logger
     -> Using the base one, still getting warnings.
@@ -16,14 +18,32 @@ TODO
     [X] timestamp date format & parse
     [X] coordinates embedded Format
 
-* DATABASE
+## DATABASE
 
 [X] Setup database dans docker
 [X] Setup dans le build
 [X] Module database
 
+# V2
 
-* TEST
+## Kafka
+    [] Set up container (if needed)
+    [] Set up in app conf
+    [] Set up in build system
+
+## Spark
+    [] Set up in app conf
+    [X] Set up in build system
+    [] Update controllers
+
+## Cassandra / HDF
+    [] Choose
+    [] Set up container (if needed)
+    [] Set up in app conf
+    [] Set up in build system
+
+
+# TEST
     - Choose a framework
         MOCHAAAAAAA
     - Valid
