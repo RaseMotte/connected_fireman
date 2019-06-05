@@ -28,20 +28,12 @@ TODO
 
 ## Kafka
     [] Set up container (if needed)
-    [] Set up in app conf
-    [] Set up in build system
+    [] Consumer for alerts (scala)
+    [] Producer for measurements (scala)
 
 ## Spark
-    [] Set up in app conf
-    [X] Set up in build system
-    [] Update controllers
-
-## Cassandra / HDF
-    [] Choose
-    [] Set up container (if needed)
-    [] Set up in app conf
-    [] Set up in build system
-
+    [] Consumer for measurements (write to hdfs)
+    [] Producer for measurements
 
 # TEST
     - Choose a framework
