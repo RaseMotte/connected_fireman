@@ -12,3 +12,21 @@ services:
         volumes:
             - "./db_postgres:/var/lib/postgresql"
             - "./init.sql:/docker-entrypoint-initdb.d/10-init.sql"
+
+    kafka:
+        image: spotify/kafka
+        container_name: scala_kafka
+        ports:
+            - "2181:2181"
+            - "9092:9092"
+        environment:
+            - ADVERTISED_HOST=localhost
+            - ADVERTISED_PORT=9092
+        command: >
+            bash -c
+            "(sleep 15s &&
+            /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh
+            --create
+            --zookeeper
+            localhost:2181 --replication-factor 1 --partitions 1
+            --topic kafka_stream &) && (supervisord -n)"
