@@ -3,8 +3,9 @@ package services
 import java.sql.ResultSet
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import javax.inject._
 
+import javax.inject._
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import play.api.Logger
 
 import scala.annotation.tailrec
@@ -36,14 +37,29 @@ object Emergency {
   @tailrec
   final
   def parseStream(res: ResultSet,
-    accumulator: List[Emergency]): List[Emergency] = {
-      if (!res.next) accumulator.reverse
-      else {
-        val value = Emergency(res.getInt("udid"),
-          res.getString("metric"),
-          res.getString("message"),
-          res.getString("mtime"))
-        parseStream(res, value +: accumulator)
-      }
+                  accumulator: List[Emergency]): List[Emergency] = {
+    if (!res.next) accumulator.reverse
+    else {
+      val value = Emergency(res.getInt("udid"),
+        res.getString("metric"),
+        res.getString("message"),
+        res.getString("mtime"))
+      parseStream(res, value +: accumulator)
     }
+  }
+
+//  @tailrec
+  final
+  def parseStreamIT(it: List[ConsumerRecord[String, String]],
+                  accumulator: List[Emergency]): List[Emergency] = {
+//    if (!it.hasNext) accumulator.reverse
+    /*else {
+      val value = Emergency(it,
+        res.getString("metric"),
+        res.getString("message"),
+        res.getString("mtime"))
+      parseStreamIT(res, value +: accumulator)
+    }*/
+    Nil
+  }
 }
