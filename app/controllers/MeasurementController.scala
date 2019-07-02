@@ -7,7 +7,7 @@ import play.api.Logger
 import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
-import services.Measurement
+import services.{Measurement, Producer}
 
 
 
@@ -20,12 +20,13 @@ class MeasurementController @Inject()(cc: ControllerComponents,
                                       db: Database) extends AbstractController(cc) {
 
   def postData = Action(parse.json) { request =>
+    println(request.body)
     val dbConnection = db.getConnection()
+    val producer = Producer("kafka_stream", "key", request.body.toString())
+
     implicit val measurementFormat: Format[Measurement]= Json.format[Measurement]
     val measurementResult = request.body.validate[Measurement]
-    println(request)
-    println(request.headers)
-    println(request.body)
+
     measurementResult.fold(
       errors => {
         BadRequest(Json.obj("status" -> "422", "message" -> JsError.toJson(errors)))

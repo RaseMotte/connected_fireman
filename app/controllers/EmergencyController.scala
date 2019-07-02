@@ -7,7 +7,7 @@ import play.api.Logger
 import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
-import services.Emergency
+import services.{Consumer, Emergency, Producer}
 
 
 
@@ -21,6 +21,8 @@ class EmergencyController @Inject()(cc: ControllerComponents,
 
   def postData = Action(parse.json) { request =>
     val dbConnection = db.getConnection()
+    val producer = Producer("kafka_stream", "key", request.body.toString())
+
     implicit val emergencyFormat: Format[Emergency]= Json.format[Emergency]
     val EmergencyResult = request.body.validate[Emergency]
     EmergencyResult.fold(
@@ -45,18 +47,23 @@ class EmergencyController @Inject()(cc: ControllerComponents,
   }
 
     def getData() = Action { implicit request: Request[AnyContent] =>
-      val dbConnection = db.getConnection()
+      //val dbConnection = db.getConnection()
+      val consumer = Consumer("kafka_stream")
       try {
-        val statement = dbConnection.createStatement()
+        /*val statement = dbConnection.createStatement()
 
         val emergencies = Emergency.parseStream(
           statement.executeQuery(s"SELECT * FROM emergency;"),
-          List[Emergency]())
+          List[Emergency]())*/
 
-        Ok(views.html.index(Nil, emergencies))
+        implicit val emergencyFormat: Format[Emergency]= Json.format[Emergency]
+        val emergencies2 = consumer.get_list().foldLeft(List[Emergency]())((acc, elem) => acc ++ List(Json.parse(elem.value()).validate[Emergency].fold(errors => Emergency(0, "", "", ""), emergency => emergency)))
+        print(emergencies2.toString())
+
+        Ok(views.html.index(Nil, emergencies2))
       }
-      finally {
+      /*finally {
         dbConnection.close()
-      }
+      }*/
     }
 }
