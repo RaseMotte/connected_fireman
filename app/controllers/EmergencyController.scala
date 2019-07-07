@@ -58,7 +58,7 @@ class EmergencyController @Inject()(cc: ControllerComponents,
 
         implicit val emergencyFormat: Format[Emergency]= Json.format[Emergency]
         val emergencies2 = consumer.get_list().foldLeft(List[Emergency]())((acc, elem) => acc ++ List(Json.parse(elem.value()).validate[Emergency].fold(errors => Emergency(0, "", "", ""), emergency => emergency)))
-        print(emergencies2.toString())
+        println(emergencies2.toString())
 
         Ok(views.html.index(Nil, emergencies2))
       }
