@@ -8,6 +8,9 @@ import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
 import services.{Measurement, Producer}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
+
+
 
 
 
@@ -19,10 +22,40 @@ import services.{Measurement, Producer}
 class MeasurementController @Inject()(cc: ControllerComponents,
                                       db: Database) extends AbstractController(cc) {
 
+  def writeData() = {
+
+    val spark = SparkSession.builder()
+      .appName("connected_fireman")
+      .master("local[*]")
+      .getOrCreate()
+
+
+    val df = spark
+      .readStream
+      .format("kafka")
+      .option("kafka.bootstrap.servers", "localhost:9092")
+      .option("subscribe", "kafka_measurement")
+      .option("startingOffsets", "earliest")
+      .load()
+
+    val consoleOutput = df.writeStream
+      .outputMode("append")
+      .format("json")
+      .option("checkpointLocation", "./HDFS")
+      .start("./HDFS")
+
+    //consoleOutput.awaitTermination()
+
+
+
+
+  }
+
+
   def postData = Action(parse.json) { request =>
-    println(request.body)
     val dbConnection = db.getConnection()
-    val producer = Producer("kafka_stream", "key", request.body.toString())
+    val producer = Producer("kafka_measurement", "key", request.body.toString())
+    writeData()
 
     implicit val measurementFormat: Format[Measurement]= Json.format[Measurement]
     val measurementResult = request.body.validate[Measurement]
@@ -48,6 +81,9 @@ class MeasurementController @Inject()(cc: ControllerComponents,
     )
   }
 
+
+
+
     def getData() = Action { implicit request: Request[AnyContent] =>
       val dbConnection = db.getConnection()
       try {
@@ -56,6 +92,8 @@ class MeasurementController @Inject()(cc: ControllerComponents,
         val measurements = Measurement.parseStream(
           statement.executeQuery(s"SELECT * FROM measurement;"),
           List[Measurement]())
+
+
 
         Ok(views.html.index(measurements, Nil))
       }
