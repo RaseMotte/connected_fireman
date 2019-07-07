@@ -3,6 +3,7 @@ package controllers
 import java.sql.ResultSet
 
 import javax.inject._
+import org.apache.spark.sql.types.StructType
 import play.api.Logger
 import play.api.db._
 import play.api.libs.json._
@@ -40,15 +41,39 @@ class MeasurementController @Inject()(cc: ControllerComponents,
 
     val consoleOutput = df.writeStream
       .outputMode("append")
-      .format("json")
+      .format("parquet")
       .option("checkpointLocation", "./HDFS")
       .start("./HDFS")
 
+    df.printSchema()
+
     //consoleOutput.awaitTermination()
+  }
+
+  def load_and_display_data() = {
+    val spark = SparkSession.builder()
+      .appName("connected_fireman")
+      .master("local[*]")
+      .getOrCreate()
+
+    val df = spark
+      .read
+      .parquet("./HDFS/part-00000*")
 
 
+    val userSchema = new StructType().add("key", "binary")
+      .add("value", "binary")
+      .add("topic", "string")
+      .add("partition", "integer")
+      .add("offset", "long")
+      .add("timestamp", "timestamp")
+      .add("timestampType", "integer")
+
+    df.show()
 
 
+    val collect = df.selectExpr("CAST(value AS STRING)").rdd.map(r => r(0)).collect()
+    collect.toList
   }
 
 
@@ -93,9 +118,10 @@ class MeasurementController @Inject()(cc: ControllerComponents,
           statement.executeQuery(s"SELECT * FROM measurement;"),
           List[Measurement]())
 
+        implicit val mesFormat: Format[Measurement]= Json.format[Measurement]
+        val measurement2 = load_and_display_data().foldLeft(List[Measurement]())((acc, elem) => acc ++ List(Json.parse(elem.toString).validate[Measurement].fold(errors => Measurement(0, 0, 0, 0, 0, ""), mes => mes)))
 
-
-        Ok(views.html.index(measurements, Nil))
+        Ok(views.html.index(measurement2, Nil))
       }
       finally {
         dbConnection.close()
